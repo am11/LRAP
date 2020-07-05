@@ -14,7 +14,8 @@ function download_packages {
     sudo apk update
     sudo apk upgrade
     # Install packages
-
+    setup-xorg-base dbus-x11 xf86-video-intel xf86-input-synaptics \
+        xf86-input-mouse xf86-input-keyboard
     # Fonts
     sudo apk add terminus-font ttf-inconsolata ttf-dejavu font-noto \
         ttf-font-awesome font-noto-extra
