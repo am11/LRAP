@@ -51,17 +51,17 @@ function copy_configs {
     # xinit
     sudo echo "exec openbox-session" >> /etc/X11/xinit/xinitrc
     # openbox
-    sudo cp openbox/rc.xml /etc/xdg/openbox/rc.xml
-    sudo cp openbox/autostart /etc/xdg/openbox/autostart
-    sudo cp openbox/menu.xml /etc/xdg/openbox/menu.xml
+    sudo cp config/openbox/rc.xml /etc/xdg/openbox/rc.xml
+    sudo cp config/openbox/autostart /etc/xdg/openbox/autostart
+    sudo cp config/openbox/menu.xml /etc/xdg/openbox/menu.xml
     # Tint2
-    sudo cp tint2/tint2rc /etc/xdg/tint2/tint2rc
+    sudo cp config/tint2/tint2rc /etc/xdg/tint2/tint2rc
     # GTK
-    sudo cp gtk/gtkrc /etc/gtk-2.0/gtkrc
-    sudo cp gtk/settings.ini /etc/gtk-3.0/settings.ini
+    sudo cp config/gtk/gtkrc /etc/gtk-2.0/gtkrc
+    sudo cp config/gtk/settings.ini /etc/gtk-3.0/settings.ini
     # LID
     sudo mkdir /etc/acpi/LID
-    sudo cp lid/00000080 /etc/acpi/LID/00000080
+    sudo cp config/lid/00000080 /etc/acpi/LID/00000080
 }
 
 # Main
