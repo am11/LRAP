@@ -20,9 +20,9 @@ function download_packages {
      apk add terminus-font ttf-inconsolata ttf-dejavu font-noto \
         ttf-font-awesome font-noto-extra
     # Others 
-     apk add dbus  openbox lxterminal tint2 feh firefox picom \
+     apk add dbus openbox lxterminal tint2 feh firefox picom \
         vim polkit consolekit2 paper-icon-theme arc-theme xrandr xbacklight \
-        acpi upowera tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
+        acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
         volumeicon lightdm-gtk-greeter htop tmux pulseaudio pulseaudio-alsa \
         alsa-plugins-pulse pcmanfm pm-utils
 
