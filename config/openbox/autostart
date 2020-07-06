@@ -14,8 +14,7 @@
 
 # If you want to use XFCE config tools...
 #
-xfce-mcs-manager &
-tint2 &
+tint2 -c /etc/xdg/tint2/tint2rc &
 feh --bg-scale $HOME/wallpaper.jpg &
 picom &
 volumeicon &

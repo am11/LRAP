@@ -24,7 +24,7 @@ function download_packages {
         vim polkit consolekit2 paper-icon-theme arc-theme xrandr xbacklight \
         acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
         volumeicon lightdm-gtk-greeter htop tmux pulseaudio pulseaudio-alsa \
-        alsa-plugins-pulse pcmanfm pm-utils
+        alsa-plugins-pulse pcmanfm pm-utils rofi neofetch sudo
 
     # Enable services
      rc-update add lightdm
@@ -32,6 +32,7 @@ function download_packages {
      rc-update add acpid
      rc-update add alsa
      rc-update add wpa_supplicant
+     rc-update add tlp
 
 }
 
@@ -39,12 +40,13 @@ function download_packages {
 function create_user {
     echo "Enter name of user to create"
     read username
-     adduser $username
-     addgroup $username wheel
-     addgroup $username audio
-     addgroup $username netdev
-     addgroup $username plugdev
-     addgroup $username video
+    adduser $username
+    addgroup $username wheel
+    addgroup $username audio
+    addgroup $username netdev
+    addgroup $username plugdev
+    addgroup $username video
+    chown $user /home/$user
 }
 
 # Copies configuration files
