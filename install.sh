@@ -46,7 +46,7 @@ function create_user {
     addgroup $username netdev
     addgroup $username plugdev
     addgroup $username video
-    chown $user /home/$user
+    chown $username /home/$username
 }
 
 # Copies configuration files
