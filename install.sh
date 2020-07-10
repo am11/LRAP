@@ -34,6 +34,10 @@ function download_packages {
      rc-update add wpa_supplicant
      rc-update add tlp
 
+    # Install configuration menu
+    cp util/lrap-config /sbin/lrap-config
+    mkdir /etc/lrap-config
+
 }
 
 # Create a user

@@ -1,0 +1,144 @@
+#!/bin/bash
+# Lightweight system configuration utility
+# JEASH1 - 2020
+
+# Should control the following
+# Wi-Fi
+# Bluetooth
+# User accounts
+# 
+
+# Main menu function
+function main_menu {
+    clear
+    echo "---------------------------------------"
+    echo "  _____ ____  _   _ ______ _____ _____"
+    echo " / ____/ __ \| \ | |  ____|_   _/ ____|"
+    echo "| |   | |  | |  \| | |__    | || |  __"
+    echo "| |   | |  | |     |  __|   | || | |_ |"
+    echo "| |___| |__| | |\  | |     _| || |__| |"
+    echo " \_____\____/|_| \_|_|    |_____\_____|"
+    echo "---------------------------------------"
+    echo ""
+    echo ""
+    echo "[0] Exit"
+    echo "[1] Wi-Fi Settings"
+    echo "[9] Misc Settings"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            # Do nothing
+        ;;
+        1)
+            wifi_menu 
+        ;;
+
+        9)
+            misc_menu
+        ;;
+
+        *)
+            main_menu
+        ;;
+    esac
+}
+
+# Wifi menu function
+function wifi_menu {
+    clear
+    echo "---------------------------------------"
+    echo "Wi-Fi Settings"
+    echo "---------------------------------------"
+    echo "Current network:"
+    iwgetid -r
+    echo "---------------------------------------"
+    echo "[0] Back"
+    echo "[1] Connect to a Network"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            main_menu 
+        ;;
+
+        1)
+            wifi_connect
+        ;;
+
+        *)
+            wifi_menu
+        ;;
+    esac
+}
+
+# Wifi connection function
+function wifi_connect {
+    clear
+    echo "---------------------------------------"
+    echo "Available Networks"
+    echo "---------------------------------------"
+    sudo ifup wlan0
+    sudo iwlist wlan0 scanning | grep "ESSID" | awk '{print $1}'
+    echo "---------------------------------------"
+    echo "Enter network name [0 to go back]:"
+    read ssid
+    case "$ssid" in
+        0)
+            wifi_menu
+        ;;
+
+        *)
+
+        ;;
+    esac
+    # Restart wifi
+    sudo ip link set wlan0 down
+    sudo ip link set wlan0 up
+    # Check if a connection already exists for this network
+    if test -f "/etc/lrap-config/$ssid.con"; then
+        # Copy the connection file
+        echo "Connection Exists!"
+        sudo cp /etc/lrap-config/$ssid.con \
+            /etc/wpa_supplicant/wpa_supplicant.conf
+    else
+        # Connection does not exist, generate a connection
+        echo "Enter the network password: [leave blank if none]:"
+        read passphrase
+        sudo wpa_passphrase $ssid $passphrase | sudo tee -a \
+            /etc/lrap-config/$ssid.con
+        
+    fi
+    sudo cp /etc/lrap-config/$ssid.con /etc/wpa_supplicant/wpa_supplicant.conf
+    sudo wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+    sudo udhcpc -i wlan0
+    wifi_menu
+}
+
+# Misc Menu function
+function misc_menu {
+clear
+echo "---------------------------------------"
+echo "Misc Settings"
+echo "---------------------------------------"
+echo "[0] Back"
+echo "---------------------------------------"
+# Get the selection
+read selection
+case "$selection" in
+    0)
+        main_menu
+    ;;
+
+    *)
+        misc_menu
+    ;;
+esac
+}
+
+
+# Run the main menu
+sudo echo ""
+main_menu
