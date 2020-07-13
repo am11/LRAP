@@ -24,7 +24,8 @@ function download_packages {
         vim polkit consolekit2 paper-icon-theme arc-theme xrandr xbacklight \
         acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
         volumeicon lightdm-gtk-greeter htop tmux pulseaudio pulseaudio-alsa \
-        alsa-plugins-pulse pcmanfm pm-utils rofi neofetch sudo
+        alsa-plugins-pulse pcmanfm pm-utils rofi neofetch sudo \
+        arc-openbox
 
     # Enable services
      rc-update add lightdm
