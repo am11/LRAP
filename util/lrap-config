@@ -30,6 +30,7 @@ function main_menu {
     case "$selection" in
         0)
             # Do nothing
+            exit
         ;;
         1)
             wifi_menu 

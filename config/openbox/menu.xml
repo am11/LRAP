@@ -384,6 +384,11 @@
       <command>dm-tool lock</command>
     </action>
   </item>
+  <item label="Configuration">
+    <action name="Execute">
+      <command>lxterminal -e lrap-config</command>
+    </action>
+  </item>
 </menu>
 
 </openbox_menu>
