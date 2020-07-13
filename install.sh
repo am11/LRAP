@@ -53,6 +53,7 @@ function create_user {
     addgroup $username video
     chown $username /home/$username
     echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers 
+    cp config/wallpaper.jpg /home/$username/
 }
 
 # Copies configuration files
