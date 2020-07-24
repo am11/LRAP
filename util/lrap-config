@@ -8,9 +8,8 @@
 # User accounts
 # 
 
-# Main menu function
-function main_menu {
-    clear
+# Print config
+function print_logo {
     echo "---------------------------------------"
     echo "  _____ ____  _   _ ______ _____ _____"
     echo " / ____/ __ \| \ | |  ____|_   _/ ____|"
@@ -19,10 +18,22 @@ function main_menu {
     echo "| |___| |__| | |\  | |     _| || |__| |"
     echo " \_____\____/|_| \_|_|    |_____\_____|"
     echo "---------------------------------------"
+}
+
+
+# Main menu function
+function main_menu {
+    clear
+    print_logo
+    echo "LRAP Main Menu"
+
     echo ""
     echo ""
     echo "[0] Exit"
     echo "[1] Wi-Fi Settings"
+    echo "[2] User Settings"
+    echo "[3] System Information"
+    echo "[8] Appearance Settings"
     echo "[9] Misc Settings"
     echo "---------------------------------------"
     # Get the selection
@@ -34,6 +45,16 @@ function main_menu {
         ;;
         1)
             wifi_menu 
+        ;;
+        2)
+            user_menu
+
+        ;;
+        3)
+            info_menu
+        ;;
+        8)
+            appearance_menu
         ;;
 
         9)
@@ -49,14 +70,19 @@ function main_menu {
 # Wifi menu function
 function wifi_menu {
     clear
+    print_logo
     echo "---------------------------------------"
     echo "Wi-Fi Settings"
     echo "---------------------------------------"
+    echo "Wi-Fi System Status:"
+    ip link | grep "wlan0" | awk '{print $9}'
     echo "Current network:"
     iwgetid -r
     echo "---------------------------------------"
     echo "[0] Back"
     echo "[1] Connect to a Network"
+    echo "[2] Turn Wi-Fi Off"
+    echo "[3] Turn Wi-Fi On"
     echo "---------------------------------------"
     # Get the selection
     read selection
@@ -68,7 +94,18 @@ function wifi_menu {
         1)
             wifi_connect
         ;;
-
+        2)
+            echo "Turning Wi-Fi off..."
+            sudo ip link set wlan0 down
+            wifi_menu
+        ;;
+        3)
+            echo "Turning Wi-Fi on..."
+            sudo ip link set wlan0 up
+            sleep 1
+            sudo udhcpc -i wlan0
+            wifi_menu
+        ;;
         *)
             wifi_menu
         ;;
@@ -78,9 +115,11 @@ function wifi_menu {
 # Wifi connection function
 function wifi_connect {
     clear
+    print_logo
     echo "---------------------------------------"
     echo "Available Networks"
     echo "---------------------------------------"
+    # Bring the interface up if down and scan for networks
     sudo ifup wlan0
     sudo iwlist wlan0 scanning | grep "ESSID" | awk '{print $1}'
     echo "---------------------------------------"
@@ -112,31 +151,153 @@ function wifi_connect {
             /etc/lrap-config/$ssid.con
         
     fi
+    # copy the configuration file to wpa_supplicant
+    # restart wpa_supplicant with the new file
     sudo cp /etc/lrap-config/$ssid.con /etc/wpa_supplicant/wpa_supplicant.conf
     sudo wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+    # Get an ip address
     sudo udhcpc -i wlan0
     wifi_menu
 }
 
 # Misc Menu function
 function misc_menu {
-clear
-echo "---------------------------------------"
-echo "Misc Settings"
-echo "---------------------------------------"
-echo "[0] Back"
-echo "---------------------------------------"
-# Get the selection
-read selection
-case "$selection" in
-    0)
-        main_menu
-    ;;
+    clear
+    print_logo
+    echo "---------------------------------------"
+    echo "Misc Settings"
+    echo "---------------------------------------"
+    echo "[0] Back"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            main_menu
+        ;;
 
-    *)
-        misc_menu
-    ;;
-esac
+        *)
+            misc_menu
+        ;;
+    esac
+}
+
+
+# Appearance Menu Function
+function appearance_menu {
+    clear
+    print_logo
+    echo "---------------------------------------"
+    echo "Appearance Settings"
+    echo "---------------------------------------"
+    echo "[0] Back"
+    echo "[1] Set Wallpaper"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            main_menu
+        ;;
+
+        1)
+
+            # Give wallpaper message
+            clear
+            echo "---------------------------------------"
+            echo "To set the wallpaper, save the desired image as"
+            echo "                  'wallpaper.jpg'"
+            echo "in your home folder"
+            echo "The new image will be displayed the next time you log in"
+            echo "---------------------------------------"
+            echo "Press Enter to return to the menu"
+            echo "---------------------------------------"
+            read pressed
+            appearance_menu
+
+        ;;
+
+        *)
+            appearance_menu
+        ;;
+    esac
+}
+
+
+# User Menu Function
+function user_menu {
+    clear
+    print_logo
+    echo "---------------------------------------"
+    echo "User Settings"
+    echo "---------------------------------------"
+    echo "[0] Back"
+    echo "[1] Change Password"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            main_menu
+        ;;
+
+        1)
+            # Get confirmation
+            clear
+            echo "---------------------------------------"            
+            echo "Are you sure that you want to change your password?"
+            echo "Enter Y or N"
+            echo "---------------------------------------"
+            read yes
+            case "$yes" in
+                # Change password
+                Y|y|yes)
+                    passwd
+                    user_menu
+                ;;
+                # Don't change
+                *)
+                    user_menu
+                ;;
+            esac
+        ;;
+        *)
+            misc_menu
+        ;;
+    esac
+}
+
+
+# Misc Menu function
+function info_menu {
+    clear
+    # Display info about the system
+    print_logo
+    echo "---------------------------------------"
+    echo "System Information"
+    echo "---------------------------------------"
+    lscpu | grep "Model name" | awk '{$1=""; $2=""; print \
+     "Processor:"; print}'
+    echo "---------------------------------------"
+    free -m | grep "Mem:" | awk '{print "Total Memory:\t" \
+        , $2, "MB\nUsed Memory:\t", $3, "MB"}'
+    echo "---------------------------------------"
+    df -m -h /dev/sda3 | grep "/dev/sda3" | \
+        awk '{print "Total Disk Space:\t", $2, "\nUsed Disk Space:\t", $3}'
+    echo "---------------------------------------"
+    echo "[0] Back"
+    echo "---------------------------------------"
+    # Get the selection
+    read selection
+    case "$selection" in
+        0)
+            main_menu
+        ;;
+
+        *)
+            misc_menu
+        ;;
+    esac
 }
 
 

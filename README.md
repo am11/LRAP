@@ -1,4 +1,5 @@
 # LRAP
+
 * Low Resource Alpine Project
 * Alpine Linux software selection and configuration for low resource usage
 
@@ -6,11 +7,12 @@
 
 * This project aims to provide an alpine based environment which has a low
     resource footprint
-* This is so that a Chrome OS-like experience can be provided on older machines
+* This is so that older machines can be used like Chromebooks
 * The low resource usage is made possible through use of openbox and tint2
     to provide a minimal desktop environment
 * The included script and configuration files streamline the setup process of
     such an environment
+* A configuration shell script is included to perform basic system management
 
 ## Installation
 
@@ -25,14 +27,19 @@
 * Ctrl-R can be used to start rofi launcher
 * Ctrl-Alt-t can be used to start lxterminal
 
-* Currently wifi must be managed manually with wpa_supplicant
+* Right clicking on the desktop allows the configuration menu to be launched
 
 ## Configuration
 
-* User configuration must be done through configuration files mostly
-* Some software includes gui configuration tools
+* Basic configuration can be done through the configuration menu
+* This includes simple Wi-Fi management and resource overviews
+* At this time, additional configuration must be performed using
+    manually written configuration files for individual pieces of software
+* More complicated Wi-Fi setups like eduroam will have to be done manually
 
-## TODO
+## Planned Features
 
-* Create a configuration shell script to act as a settings menu -
-    mostly so that wireless networks can be connected to easily
+* More advanced network configuration utilities
+* User interface configuration utilities
+* Improved setup procedure
+* Easy update procedure
