@@ -37,6 +37,14 @@
     manually written configuration files for individual pieces of software
 * More complicated Wi-Fi setups like eduroam will have to be done manually
 
+# Post Installation
+
+* For a better web browsing experience on older machines, installing the
+    following firefox extensions is recommended:
+    * Ghostery - Blocks adverts to allow pages to load faster
+    * User-Agent Switcher - Allows you to 'pretend' to be a smartphone
+        and receive simpler versions of web pages
+
 ## Planned Features
 
 * More advanced network configuration utilities
