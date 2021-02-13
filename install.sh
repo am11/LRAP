@@ -27,7 +27,7 @@ function download_packages {
     alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
     slock setxkbmap dmenu xorg-server xinit
     # Build
-    apk add build-base make libx11
+    apk add build-base make libx11 libx11-dev libxft-dev libxinerama-dev ncurses
 
     # Enable services
     rc-update add dbus
