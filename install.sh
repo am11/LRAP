@@ -27,7 +27,7 @@ function download_packages {
     alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
     slock setxkbmap dmenu
     # Build
-    apk add gcc make libx11
+    apk add build-base make libx11
 
     # Enable services
     rc-update add dbus
@@ -102,15 +102,9 @@ function install_suckless {
 
 # Header printing function
 function print_header() {
-    width=`tput cols`
-    line=""
-    i=0
-    while ["$i" -l "$width"]; do 
-        line+="="
-    done
-    echo $line
+    echo "===================="
     echo $1
-    echo $line
+    echo "===================="
 }
 
 # Main
