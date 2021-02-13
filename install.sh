@@ -25,7 +25,7 @@ function download_packages {
     acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
     htop tmux pulseaudio pulseaudio-alsa \
     alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
-    slock setxkbmap dmenu
+    slock setxkbmap dmenu xorg-server xinit
     # Build
     apk add build-base make libx11
 
