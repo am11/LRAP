@@ -2,7 +2,7 @@
 
 # Downloads the required packages
 function download_packages {
-
+    print_header("Downloading Packages")
     #Enable repos
     echo "http://uk.alpinelinux.org/alpine/edge/community" \
         >> /etc/apk/repositories
@@ -20,15 +20,16 @@ function download_packages {
     apk add terminus-font ttf-inconsolata ttf-dejavu font-noto \
         ttf-font-awesome font-noto-extra
     # Others 
-    apk add dbus openbox lxterminal tint2 feh firefox picom \
+    apk add dbus feh firefox picom \
     vim polkit consolekit2 paper-icon-theme arc-theme xrandr xbacklight \
     acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
-    volumeicon lightdm-gtk-greeter htop tmux pulseaudio pulseaudio-alsa \
-    alsa-plugins-pulse pcmanfm pm-utils rofi neofetch sudo \
-    arc-openbox
+    htop tmux pulseaudio pulseaudio-alsa \
+    alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
+    slock setxkbmap dmenu
+    # Build
+    apk add gcc make libx11
 
     # Enable services
-    rc-update add lightdm
     rc-update add dbus
     rc-update add acpid
     rc-update add alsa
@@ -39,12 +40,15 @@ function download_packages {
     cp util/lrap-config /sbin/lrap-config
     mkdir /etc/lrap-config
 
+    echo "--> Done!"
+
 }
 
 # Create a user
 function create_user {
-    echo "Enter name of user to create"
-    read username
+    print_header("User Creation") 
+    echo "--> Enter name of user to create"
+    read -p "> " username
     adduser $username
     addgroup $username wheel
     addgroup $username audio
@@ -58,14 +62,9 @@ function create_user {
 
 # Copies configuration files
 function copy_configs {
+    print_header("Installing Configuration Files")
     # xinit
     echo "exec openbox-session" >> /etc/X11/xinit/xinitrc
-    # openbox
-    cp config/openbox/rc.xml /etc/xdg/openbox/rc.xml
-    cp config/openbox/autostart /etc/xdg/openbox/autostart
-    cp config/openbox/menu.xml /etc/xdg/openbox/menu.xml
-    # Tint2
-    cp config/tint2/tint2rc /etc/xdg/tint2/tint2rc
     # GTK
     cp config/gtk/gtkrc /etc/gtk-2.0/gtkrc
     cp config/gtk/settings.ini /etc/gtk-3.0/settings.ini
@@ -75,13 +74,50 @@ function copy_configs {
     # Xorg
     mkdir /etc/X11/xorg.conf.d
     cp config/xorg/* /etc/X11/xorg.conf.d/
+    cp config/xinit/xinitrc /etc/X11/xinit/
+    echo "--> Done!"
+}
 
+# Installs suckless apps
+function install_suckless {
+    print_header("Installing Suckless Apps")
+    mkdir ./suckless && cd suckless
+    # Dwm
+    git clone https://git.suckless.org/dwm
+    cp ../config/suckless/dwm_config.h ./dwm/config.h
+    cd dwm && make clean install
+    cd ../
+    # Slstatus
+    git clone https://git.suckless.org/slstatus
+    cp ../config/suckless/slstatus_config.h ./slstatus/config.h
+    cd slstatus && make clean install
+    cd ../
+    # St
+    git clone https://git.suckless.org/st
+    cp ../config/suckless/st_config.h ./st/config.h
+    cd st && make clean install
+    cd ../../
+    echo "--> Done!"
+}
+
+# Header printing function
+function print_header() {
+    width=`tput cols`
+    line=""
+    for ((i = 0; i < $width; i++)); do
+        line+="="
+    done
+    echo $line
+    echo $1
+    echo $line
 }
 
 # Main
 # LRAP Initial Install Script
-echo "Installing LRAP Software package..."
+print_header("Installing LRAP Software Package")
 download_packages
 create_user
+install_suckless
 copy_configs
+echo "--> Rebooting..."
 reboot

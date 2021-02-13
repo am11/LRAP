@@ -1,0 +1,6 @@
+feh --bg-scale $HOME/wallpaper.jpg &
+picom &
+setxkbmap gb &
+xss-lock slock &
+slstatus &
+exec dwm 
