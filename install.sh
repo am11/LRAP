@@ -2,7 +2,7 @@
 
 # Downloads the required packages
 function download_packages {
-    print_header("Downloading Packages")
+    print_header "Downloading Packages"
     #Enable repos
     echo "http://uk.alpinelinux.org/alpine/edge/community" \
         >> /etc/apk/repositories
@@ -46,7 +46,7 @@ function download_packages {
 
 # Create a user
 function create_user {
-    print_header("User Creation") 
+    print_header "User Creation"
     echo "--> Enter name of user to create"
     read -p "> " username
     adduser $username
@@ -62,7 +62,7 @@ function create_user {
 
 # Copies configuration files
 function copy_configs {
-    print_header("Installing Configuration Files")
+    print_header "Installing Configuration Files"
     # xinit
     echo "exec openbox-session" >> /etc/X11/xinit/xinitrc
     # GTK
@@ -80,7 +80,7 @@ function copy_configs {
 
 # Installs suckless apps
 function install_suckless {
-    print_header("Installing Suckless Apps")
+    print_header "Installing Suckless Apps"
     mkdir ./suckless && cd suckless
     # Dwm
     git clone https://git.suckless.org/dwm
@@ -114,7 +114,7 @@ function print_header() {
 
 # Main
 # LRAP Initial Install Script
-print_header("Installing LRAP Software Package")
+print_header "Installing LRAP Software Package"
 download_packages
 create_user
 install_suckless
