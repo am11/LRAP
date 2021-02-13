@@ -104,7 +104,8 @@ function install_suckless {
 function print_header() {
     width=`tput cols`
     line=""
-    for ((number = 0; number < $width; number++)); do
+    i=0
+    while["$i" -l "$width"]; do 
         line+="="
     done
     echo $line
