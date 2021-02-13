@@ -105,7 +105,7 @@ function print_header() {
     width=`tput cols`
     line=""
     i=0
-    while["$i" -l "$width"]; do 
+    while ["$i" -l "$width"]; do 
         line+="="
     done
     echo $line
