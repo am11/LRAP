@@ -24,7 +24,7 @@ function download_packages {
     acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
     htop tmux pulseaudio pulseaudio-alsa \
     alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
-    slock setxkbmap dmenu xsetroot wireless-tools
+    slock setxkbmap dmenu xsetroot wireless-tools wpa_supplicant
     # Build
     apk add build-base make libx11 libx11-dev libxft-dev libxinerama-dev ncurses
 
@@ -52,8 +52,12 @@ function create_user {
     addgroup $username wheel
     addgroup $username audio
     addgroup $username netdev
-    addgroup $username plugdev
     addgroup $username video
+    addgroup $username floppy
+    addgroup $username cdrom
+    addgroup $username tape
+    addgroup $username usb
+    addgroup $username users
     chown $username /home/$username
     echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers 
     cp config/wallpaper.jpg /home/$username/
