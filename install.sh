@@ -2,7 +2,7 @@
 
 # Downloads the required packages
 function download_packages {
-    print_header "Downloading Packages"
+    print_header "Package Installation"
     #Enable repos
     echo "http://uk.alpinelinux.org/alpine/edge/community" \
         >> /etc/apk/repositories
@@ -14,18 +14,17 @@ function download_packages {
     apk update
     apk upgrade
     # Install packages
-    setup-xorg-base dbus-x11 xf86-video-intel xf86-input-synaptics \
-        xf86-input-mouse xf86-input-keyboard
+    setup-xorg-base
     # Fonts
     apk add terminus-font ttf-inconsolata ttf-dejavu font-noto \
         ttf-font-awesome font-noto-extra
     # Others 
-    apk add dbus feh firefox picom \
+    apk add dbus dbus-x11 feh firefox picom \
     vim polkit consolekit2 paper-icon-theme arc-theme xrandr xbacklight \
     acpi tlp alsa-utils alsa-utils-doc alsa-lib alsaconf \
     htop tmux pulseaudio pulseaudio-alsa \
     alsa-plugins-pulse pcmanfm pm-utils neofetch sudo \
-    slock setxkbmap dmenu xorg-server xinit
+    slock setxkbmap dmenu xsetroot wireless-tools
     # Build
     apk add build-base make libx11 libx11-dev libxft-dev libxinerama-dev ncurses
 
@@ -63,8 +62,6 @@ function create_user {
 # Copies configuration files
 function copy_configs {
     print_header "Installing Configuration Files"
-    # xinit
-    echo "exec openbox-session" >> /etc/X11/xinit/xinitrc
     # GTK
     cp config/gtk/gtkrc /etc/gtk-2.0/gtkrc
     cp config/gtk/settings.ini /etc/gtk-3.0/settings.ini
@@ -87,11 +84,6 @@ function install_suckless {
     cp ../config/suckless/dwm_config.h ./dwm/config.h
     cd dwm && make clean install
     cd ../
-    # Slstatus
-    git clone https://git.suckless.org/slstatus
-    cp ../config/suckless/slstatus_config.h ./slstatus/config.h
-    cd slstatus && make clean install
-    cd ../
     # St
     git clone https://git.suckless.org/st
     cp ../config/suckless/st_config.h ./st/config.h
@@ -102,9 +94,9 @@ function install_suckless {
 
 # Header printing function
 function print_header() {
-    echo "===================="
-    echo $1
-    echo "===================="
+    echo "============================================================================="
+    echo "| $1"
+    echo "============================================================================="
 }
 
 # Main
@@ -114,5 +106,4 @@ download_packages
 create_user
 install_suckless
 copy_configs
-echo "--> Rebooting..."
-reboot
+echo "--> Installation has finished, please reboot"
