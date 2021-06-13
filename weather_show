@@ -1,0 +1,62 @@
+#!/usr/bin/env ash
+
+## When the program is interrupted, call the cleanup function
+trap "cleanup; exit" SIGHUP SIGINT SIGTERM
+
+## When the window is resized, redraw the UI
+trap "show_weather" SIGWINCH
+
+cleanup() {
+    ## Restores the screen content
+    tput rmcup
+
+    ## Makes the cursor visible again
+    tput cvvis
+}
+
+## Saves the screen contents
+tput smcup
+
+city=$(basename $(curl -s https://ipapi.co/timezone))
+text=
+longest_line_length=
+text_height=
+update_weather() {
+    text=$(curl -s wttr.in/$city?0q)
+    nocolor=$(printf "$text" | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')
+    longest_line_length=$(printf "$nocolor" | wc -L)
+    text_height=$(printf "$nocolor" | wc -l)
+}
+
+show_weather() {
+    ## Clears the screen
+    clear
+
+    ## Hides the cursor
+    tput civis
+
+    ## Gets terminal width and height
+    height=$(tput lines)
+    width=$(tput cols)
+
+    ## Calculate padding
+    row_pad="$(((height-text_height)/2))"
+    col_pad="$(((width-longest_line_length)/2))"
+
+
+    ## Prints the word
+    i=0
+    printf "%s\n" "$text" | while IFS= read -r line; do
+        tput cup "$((row_pad+i))" "$col_pad"
+        printf "%s\n" "$line"
+        i=$((i+1))
+    done
+}
+
+## Run intervals manually so interrupt awakes from sleep
+while :; do
+    update_weather
+    show_weather
+    sleep 15m &
+    wait
+done

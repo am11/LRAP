@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h>
+#include "movestack.c"
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -23,7 +24,8 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+//static const char *tags[] = { "ⅰ", "ⅱ", "ⅲ", "ⅳ", "ⅴ", "ⅵ", "ⅶ", "ⅷ", "ⅸ" };
+static const char *tags[] = { "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -38,6 +40,7 @@ static const Rule rules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -56,19 +59,20 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SCROT(flag) SHCMD("sleep 0.2 && scrot '%Y-%m-%d_$wx$h_scrot.png' -"#flag"e 'mv $f ~/Pictures/Screenshots/'")
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 /* Added */
-static const char* brightnessupcmd[] = {"xbacklight", "+10", NULL};
-static const char* brightnessdowncmd[] = {"xbacklight", "-10", NULL};
+static const char* brightnessupcmd[] = {"light", "-A", "10", NULL};
+static const char* brightnessdowncmd[] = {"light", "-U", "10", NULL};
 static const char* volumeupcmd[] = {"amixer", "set", "Master", "10%+", NULL};
 static const char* volumedowncmd[] = {"amixer", "set", "Master", "10%-", NULL};
 static const char* volumemutecmd[] = {"amixer", "set", "Master", "toggle", NULL};
 static const char* micmutecmd[] = {"amixer", "set", "Capture", "toggle", NULL};
-static const char* lockcmd[] = {"slock", NULL};
+static const char* lockcmd[] = {"i3lock", "-i", "/usr/share/i3lock/crane-chick.png"};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -81,6 +85,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
@@ -111,7 +117,10 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,       quit,           {0} },
+	{ 0,                            XK_Print,   spawn,          SCROT()}, // fullscreen capture
+	{ MODKEY,                       XK_Print,   spawn,          SCROT(u)}, // focused window only
+	{ MODKEY|ShiftMask,             XK_s,       spawn,          SCROT(s)}, // selection
 };
 
 /* button definitions */
@@ -130,4 +139,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
